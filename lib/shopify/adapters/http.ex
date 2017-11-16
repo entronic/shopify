@@ -5,26 +5,30 @@ defmodule Shopify.Adapters.HTTP do
   @options [hackney: [pool: :shopify], ssl: [{:versions, [:'tlsv1.2']}]]
 
   def get(request) do
-    HTTPoison.get(request.full_url, request.headers, @options)
+    HTTPoison.get(request.full_url, request.headers, options())
       |> handle_response(request.resource)
   end
 
   def post(request) do
-    HTTPoison.post(request.full_url, request.body, request.headers, @options)
+    HTTPoison.post(request.full_url, request.body, request.headers, options())
       |> handle_response(request.resource)
   end
 
   def put(request) do
-    HTTPoison.put(request.full_url, request.body, request.headers, @options)
+    HTTPoison.put(request.full_url, request.body, request.headers, options())
       |> handle_response(request.resource)
   end
 
   def delete(request) do
-    HTTPoison.delete(request.full_url, request.headers, @options)
+    HTTPoison.delete(request.full_url, request.headers, options())
       |> handle_response(request.resource)
   end
 
   def handle_response({:ok, %HTTPoison.Response{status_code: code, body: body}}, resource)  do
     Shopify.Response.new(code, body, resource)
+  end
+
+  defp options() do
+    Keyword.merge(@options, Shopify.Config.hackney_opts)
   end
 end

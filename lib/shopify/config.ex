@@ -11,5 +11,7 @@ defmodule Shopify.Config do
 
   def password, do: get(:password)
 
+  def hackney_opts, do: get(:hackney_opts, [])
+
   def version, do: Mix.Project.config[:version]
 end
